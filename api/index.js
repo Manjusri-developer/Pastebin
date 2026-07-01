@@ -12,9 +12,7 @@ const {
 const app = express();
 app.use(express.json());
 const corsOptions = {
-  origin: [
-    "https://pastebinapp-five.vercel.app", // prod frontend
-  ],
+  origin: true, // prod frontend
   methods: ["GET", "POST", "OPTIONS"],
   allowedHeaders: ["Content-Type"],
   credentials: true,
@@ -40,7 +38,10 @@ const DatabaseConnection = async () => {
   console.log("Trying to connect to DB......");
   if (mongoose.connection.readyState === 0) {
     try {
-      await mongoose.connect(process.env.MONGOURL);
+      await mongoose.connect(process.env.MONGOURL,
+        {
+        serverSelectionTimeoutMS: 8000
+      });
       console.log(`Database ${mongoose.connection.name} is connected`);
     } catch (error) {
       console.log("DB Connection failed", error);
