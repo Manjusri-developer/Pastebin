@@ -11,6 +11,7 @@ const CreatePaste = () =>{
     exposure: "",
   });
   const [pasteId, setPasteId] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const OnchangeHandler = (event) => {
     const { name, value } = event.target;
@@ -22,6 +23,8 @@ const CreatePaste = () =>{
 
   const PasteCreation = async (e) => {
     e.preventDefault();
+    if (isSubmitting) return;
+    setIsSubmitting(true);
     try {
       const response = await axios.post("/api/pastes", {
         content: pasteData.content,
@@ -38,6 +41,10 @@ const CreatePaste = () =>{
       });
     } catch (error) {
       console.error(error);
+      toast.error("Failed to create paste. Please try again.");
+    }
+    finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -101,7 +108,7 @@ const CreatePaste = () =>{
               </select>
             </div>
 
-            <button className="btn mt-2 w-25" style={{background:"#688294"}}>Create Paste</button>
+            <button className="btn mt-2 w-25" style={{background:"#688294"}} disabled={isSubmitting}>{isSubmitting ? "Creating..." : "Create Paste"}</button>
           </div>
         </form>
       </div>
